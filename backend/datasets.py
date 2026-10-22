@@ -81,11 +81,44 @@ def _iris4(n, noise, rng):
     return iris.data, iris.target, names, "species", list(iris.target_names)
 
 
+def _exam(n, noise, rng):
+    hours = rng.uniform(0, 10, n)
+    sleep = rng.uniform(3, 9, n)
+    score = 0.9 * hours + 0.8 * sleep - 9.5 + rng.normal(0, noise, n)
+    return np.c_[hours, sleep], (score > 0).astype(int), ["hours_studied", "hours_slept"], "result", ["fail", "pass"]
+
+
+def _plants(n, noise, rng):
+    temp = rng.uniform(0, 45, n)
+    hum = rng.uniform(10, 95, n)
+    ok = (temp > 14) & (temp < 31) & (hum > 40)
+    flip = rng.random(n) < noise
+    return np.c_[temp, hum], np.where(flip, ~ok, ok).astype(int), ["temperature_C", "humidity_pct"], "plant", ["wilts", "thrives"]
+
+
+def _houses(n, noise, rng):
+    size = rng.uniform(400, 3600, n)
+    price = 20 + 160 * (1 - np.exp(-size / 1400)) + 25 * (size > 2400) + rng.normal(0, noise, n)
+    return np.c_[size], price, ["size_sqft"], "price_lakhs", None
+
+
 def _spec(key, name, tasks, dims, fn, origin, noise=None, fixed_n=False, blurb=""):
     return dict(key=key, name=name, tasks=tasks, dims=dims, fn=fn, origin=origin, noise=noise, fixed_n=fixed_n, blurb=blurb)
 
 
 DATASETS = {d["key"]: d for d in [
+    _spec("exam", "Pass or fail (study + sleep)", ["classification"], 2, _exam,
+          "Each student's study hours (0–10) and sleep hours (3–9) are random. Students who study and sleep more tend to pass, "
+          "with some luck mixed in (the noise).",
+          dict(label="Luck (noise)", min=0, max=3, step=0.1, default=1.0)),
+    _spec("plants", "Plant thrives or wilts", ["classification"], 2, _plants,
+          "Each plant gets a random temperature and humidity. Plants thrive only between 14 and 31 °C with humidity above 40%. "
+          "A small share of plants randomly break the rule (the noise).",
+          dict(label="Share of rule-breakers", min=0, max=0.2, step=0.01, default=0.04)),
+    _spec("houses", "House size → price", ["regression"], 1, _houses,
+          "Each house gets a random size. Price grows quickly for small houses, then levels off, with a jump for very large homes. "
+          "Real-life variation is added as noise.",
+          dict(label="Noise (lakhs)", min=0, max=25, step=1, default=10)),
     _spec("study", "Study hours → exam score", ["regression"], 1, _study,
           "Each student's hours are drawn uniformly from 0–10. Their score is the true rule 35 + 6·hours, plus random "
           "'real-life' noise drawn from a bell curve (std = the noise slider).",

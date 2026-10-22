@@ -256,3 +256,41 @@ pre.flow { background: #fff; border-radius: 10px; padding: .9rem 1.1rem; font-si
 .narration p { margin: 0 0 .35rem; }
 .chart-note { margin-top: .6rem; font-size: .86rem; color: var(--muted); border-top: 1px dashed var(--line); padding-top: .55rem; }
 .chart-note p { margin: 0 0 .3rem; } .chart-note b { color: var(--ink); }
+
+/* ---------- guided lesson (slides) ---------- */
+.mode-switch { display: inline-flex; background: var(--panel2); border: 1px solid var(--line); border-radius: 12px; padding: .25rem; gap: .2rem; }
+.mode-switch button { border: 0; background: transparent; padding: .4rem .9rem; border-radius: 9px; font-weight: 600; font-size: .88rem; color: var(--muted); cursor: pointer; }
+.mode-switch button.on { background: var(--panel); color: var(--accent); box-shadow: 0 1px 4px rgba(20,26,46,.12); }
+.lesson-shell { max-width: 1320px; margin: 0 auto; padding: 1.5rem; }
+@media (max-width: 700px) { .lesson-shell { padding: .8rem; } }
+.deck { background: var(--panel); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); overflow: hidden; }
+.deck-top { display: flex; align-items: center; gap: 1rem; padding: .9rem 1.4rem; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.deck-name { font-weight: 800; letter-spacing: -.01em; }
+.deck-dots { display: flex; gap: .35rem; flex: 1; flex-wrap: wrap; }
+.deck-dot { width: 26px; height: 7px; border-radius: 99px; border: 0; background: var(--line); cursor: pointer; padding: 0; transition: background .2s; }
+.deck-dot.done { background: #b9b3f5; } .deck-dot.on { background: var(--accent); }
+.slide { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 2rem; padding: 1.6rem 1.8rem; animation: fade .35s ease; min-height: 520px; }
+@media (max-width: 980px) { .slide { grid-template-columns: 1fr; padding: 1rem; gap: 1rem; } }
+.slide-visual { background: var(--panel2); border: 1px solid var(--line); border-radius: 16px; padding: .8rem; align-self: start; }
+.slide-text h2 { font-size: 1.7rem; font-weight: 800; letter-spacing: -.025em; margin: .15rem 0 .9rem; }
+.slide-text p { font-size: 1.06rem; line-height: 1.75; color: #262d45; }
+.slide-step { font-size: .72rem; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: .1em; }
+.slide-anim { display: flex; align-items: center; gap: .8rem; margin-top: .6rem; }
+.slide-anim-bar { flex: 1; height: 6px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.slide-anim-bar div { height: 100%; background: var(--accent); transition: width .1s linear; }
+.slide-anim .btn { padding: .3rem .9rem; font-size: .85rem; }
+.slide-terms { margin-top: 1.2rem; background: #f8f7ff; border: 1px solid #e4e0fc; border-radius: 14px; padding: .8rem 1rem; }
+.slide-terms-label { font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; color: var(--accent); margin-bottom: .4rem; }
+.slide-term { font-size: .9rem; margin-bottom: .55rem; line-height: 1.5; }
+.slide-term:last-child { margin-bottom: 0; }
+.slide-term-ex { color: var(--muted); font-size: .84rem; }
+.deck-nav { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .9rem 1.4rem; border-top: 1px solid var(--line); background: var(--panel2); }
+.deck-nav .btn { min-width: 120px; padding: .6rem 1.1rem; font-size: 1rem; }
+.plot .chart-label { fill: var(--ink); font-size: 14px; font-weight: 700; paint-order: stroke; stroke: var(--panel2); stroke-width: 5px; }
+.plot .chart-label.small-label { font-size: 11.5px; }
+.slide-tree { background: #fff; border-radius: 12px; padding: 1rem; max-height: 470px; overflow: auto; }
+.recap { display: flex; flex-direction: column; gap: .5rem; padding: .6rem; position: relative; }
+.recap-step { display: flex; gap: .8rem; align-items: center; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: .7rem .9rem; font-size: .98rem; }
+.recap-step.in-loop { border-color: #b9b3f5; background: #f8f7ff; }
+.recap-n { flex: none; width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 800; display: grid; place-items: center; }
+.recap-loop { font-size: .88rem; color: var(--accent); font-weight: 700; padding: .3rem .4rem 0; }

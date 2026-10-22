@@ -9,6 +9,17 @@ import { ForestViz } from './viz/ForestViz'
 import { LinearViz } from './viz/LinearViz'
 import { LogisticViz } from './viz/LogisticViz'
 import { XgbViz } from './viz/XgbViz'
+import { ForestDeck } from './slides/ForestDeck'
+import { LinearDeck } from './slides/LinearDeck'
+import { LogisticDeck } from './slides/LogisticDeck'
+import { XgbDeck } from './slides/XgbDeck'
+
+const DECKS: Record<string, () => React.ReactElement> = {
+  linear: LinearDeck,
+  logistic: LogisticDeck,
+  forest: ForestDeck,
+  xgboost: XgbDeck,
+}
 
 const VIZ: Record<string, (p: { run: RunResponse }) => React.ReactElement> = {
   linear: LinearViz,
@@ -37,6 +48,7 @@ export default function App() {
   const [seed, setSeed] = useState(42)
   const [params, setParams] = useState<Record<string, number | string>>({})
   const [tab, setTab] = useState<TabId>('learn')
+  const [mode, setMode] = useState<'lesson' | 'playground'>('lesson')
   const [run, setRun] = useState<RunResponse | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -68,7 +80,7 @@ export default function App() {
   )
 
   useEffect(() => {
-    if (!request.dataset || !Object.keys(request.params).length) return
+    if (mode !== 'playground' || !request.dataset || !Object.keys(request.params).length) return
     const ctl = new AbortController()
     setLoading(true)
     runModel(request, ctl.signal)
@@ -76,7 +88,7 @@ export default function App() {
       .catch((e) => { if (e.name !== 'AbortError') setErr(String(e.message ?? e)) })
       .finally(() => setLoading(false))
     return () => ctl.abort()
-  }, [request])
+  }, [request, mode])
 
   const Viz = VIZ[algoId]
   const fresh = run && run.params && algo && run.data.dataset === ds?.name && VIZ[algoId] && Object.keys(params).every((k) => k in run.params)
@@ -90,10 +102,22 @@ export default function App() {
             {meta?.algorithms.filter((a) => a.category === 'supervised').map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
           </optgroup>
         </select>
-        <span className="status"><span className={'dot' + (loading ? ' busy' : '')} />{loading ? 'Training model…' : run ? 'Model trained' : 'Waiting'}</span>
+        <div className="mode-switch" role="tablist">
+          <button className={mode === 'lesson' ? 'on' : ''} onClick={() => setMode('lesson')}>Guided lesson</button>
+          <button className={mode === 'playground' ? 'on' : ''} onClick={() => setMode('playground')}>Playground (advanced)</button>
+        </div>
+        {mode === 'playground' && <span className="status"><span className={'dot' + (loading ? ' busy' : '')} />{loading ? 'Training model…' : run ? 'Model trained' : 'Waiting'}</span>}
       </header>
 
-      <div className="shell">
+      {mode === 'lesson' && (
+        <div className="lesson-shell">
+          {err && <Callout kind="warn">{err}</Callout>}
+          {!meta && !err && <p className="muted">Connecting to the backend…</p>}
+          {meta && DECKS[algoId] && (() => { const D = DECKS[algoId]; return <D key={algoId} /> })()}
+        </div>
+      )}
+
+      {mode === 'playground' && <div className="shell">
         <aside className="side">
           <Card>
             <div className="side-title">Step 1 · Data</div>
@@ -150,7 +174,7 @@ export default function App() {
             </div>
           )}
         </main>
-      </div>
+      </div>}
     </>
   )
 }

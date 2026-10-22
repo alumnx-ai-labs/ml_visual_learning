@@ -5,10 +5,10 @@ import { classColor, HeatGrid, Plot, probColor } from '../components/Plot'
 import { Card, fmt, Legend, Slider } from '../components/ui'
 import type { VizProps } from '../types'
 
-interface Node { f: number; t: number; l: number; r: number; n: number; imp: number; v: number | number[] }
+export interface Node { f: number; t: number; l: number; r: number; n: number; imp: number; v: number | number[] }
 
 /** Compact text view of a decision tree: each line is one question, indentation = depth. */
-function TreeView({ nodes, names, classes, clf, maxDepth = 3 }: { nodes: Node[]; names: string[]; classes: string[]; clf: boolean; maxDepth?: number }) {
+export function TreeView({ nodes, names, classes, clf, maxDepth = 3 }: { nodes: Node[]; names: string[]; classes: string[]; clf: boolean; maxDepth?: number }) {
   const rows: { depth: number; text: string; leaf: boolean; color?: string }[] = []
   const walk = (i: number, depth: number, prefix: string) => {
     const nd = nodes[i]

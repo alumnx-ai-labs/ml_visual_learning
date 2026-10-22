@@ -13,7 +13,20 @@ Each lesson starts with a problem statement and a goal:
 | Random Forest | Predict whether a plant thrives or wilts when no straight line separates the groups. | Combine many different trees into a vote that follows any boundary shape without overfitting. |
 | XGBoost | Predict house prices as accurately as possible. | Add small trees in sequence, each fixing the remaining errors, and stop before test error rises. |
 
-Each model has four tabs:
+### Guided lesson (default)
+
+Each model opens as a short slide deck built on a simple story. Click **Next** or use the arrow keys. Every slide has one picture (animated where useful) and 2–3 sentences. Every technical word has a hover explanation, and each slide lists its terms with a plain meaning and an example. No settings to touch.
+
+| Model | Story |
+|---|---|
+| Linear Regression | Study hours → exam score |
+| Logistic Regression | Hours studied + slept → pass or fail |
+| Random Forest | Temperature + humidity → plant thrives or wilts |
+| XGBoost | House size → price |
+
+### Playground (advanced)
+
+Switch to **Playground (advanced)** in the header to pick datasets, change noise and model settings, and explore four tabs:
 
 | Tab | What you get |
 |---|---|
@@ -101,7 +114,8 @@ frontend/src/
   App.tsx            Layout, dropdown, controls, tabs
   content/           Lesson text for each model (edit these to change the lessons)
   components/        Learn, Data and Results tabs, chart primitives
-  viz/               The "Watch it learn" animation for each model
+  slides/            Guided lesson slide decks, one per model
+  viz/               The "Watch it learn" animation for each model (Playground)
 ```
 
 ## Useful commands
