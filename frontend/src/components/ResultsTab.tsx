@@ -51,17 +51,17 @@ export function ResultsTab({ run }: { run: RunResponse }) {
         <div className="kpis">
           {reg ? (
             <>
-              <Kpi label="R² (test)" value={fmt(te.r2, 3)} hint="Share of the target's variation explained. 1 = perfect, 0 = as good as guessing the average." />
-              <Kpi label="RMSE (test)" value={fmt(te.rmse, 2)} hint={`Typical size of a mistake, in ${data.target_name} units. Big misses count extra.`} />
-              <Kpi label="MAE (test)" value={fmt(te.mae, 2)} hint="Average absolute mistake. Easier to read than RMSE." />
-              <Kpi label="R² (train)" value={fmt(trm.r2, 3)} hint="Same score on the training points. Compare with the test value." />
+              <Kpi label="R² (test)" value={fmt(te.r2, 3)} hint="Grade from 0 to 1: how much of the error from 'just guess the average' the model removed. 1 = perfect, 0 = no better than guessing the average." />
+              <Kpi label="RMSE (test)" value={fmt(te.rmse, 2)} hint={`Typical size of a mistake, in ${data.target_name} units. RMSE 4 = usually about 4 off.`} />
+              <Kpi label="MAE (test)" value={fmt(te.mae, 2)} hint="Average mistake size, ignoring whether it was too high or too low." />
+              <Kpi label="R² (train)" value={fmt(trm.r2, 3)} hint="Same grade on the points it learned from. Much higher than the test R² = memorising." />
             </>
           ) : (
             <>
               <Kpi label="Accuracy (test)" value={pct(te.accuracy)} hint="Share of test points classified correctly." />
               <Kpi label="Precision" value={pct(te.precision)} hint={`When it says ${className(run, 1)}, how often is it right?`} />
               <Kpi label="Recall" value={pct(te.recall)} hint={`Of all true ${className(run, 1)} points, how many did it catch?`} />
-              <Kpi label="F1 score" value={fmt(te.f1, 3)} hint="Balance of precision and recall (harmonic mean)." />
+              <Kpi label="F1 score" value={fmt(te.f1, 3)} hint="One number combining precision and recall. High only if both are high." />
               <Kpi label="Accuracy (train)" value={pct(trm.accuracy)} hint="Score on the training points. Compare with test." />
             </>
           )}

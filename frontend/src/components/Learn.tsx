@@ -30,6 +30,7 @@ function TermTip({ term, children }: { term: Term; children: ReactNode }) {
       <span className="term-pop" role="tooltip">
         <span className="term-name">{term.name}</span>
         <span className="term-plain">{term.plain}</span>
+        <span className="term-ex"><b>Example:</b> {term.example}</span>
         <span className="term-tech"><b>Technically:</b> {term.tech}</span>
       </span>
     </span>
@@ -95,7 +96,11 @@ function KeyTerms({ ch }: { ch: Chapter }) {
         {terms.map((t) => (
           <div key={t.name} className="keyterm">
             <dt>{t.name}</dt>
-            <dd>{t.plain}<span className="keyterm-tech">{t.tech}</span></dd>
+            <dd>
+              {t.plain}
+              <span className="keyterm-ex"><b>Example:</b> {t.example}</span>
+              <span className="keyterm-tech"><b>Technically:</b> {t.tech}</span>
+            </dd>
           </div>
         ))}
       </dl>
