@@ -196,3 +196,45 @@ pre.flow { background: #fff; border-radius: 10px; padding: .9rem 1.1rem; font-si
 .formula-card { background: var(--panel2); border-radius: 12px; padding: .7rem .9rem; border: 1px solid var(--line); }
 
 .pager { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-top: 1.2rem; flex-wrap: wrap; }
+
+/* ---------- term tooltips ---------- */
+.term { position: relative; border-bottom: 2px dotted var(--accent); cursor: help; outline: none; }
+.term-pop {
+  position: absolute; left: 50%; bottom: calc(100% + 8px); transform: translateX(-50%); z-index: 30;
+  width: min(320px, 80vw); background: var(--ink); color: #fff; border-radius: 12px; padding: .7rem .85rem;
+  font-size: .84rem; line-height: 1.5; font-weight: 400; text-align: left; box-shadow: 0 10px 30px rgba(20,26,46,.25);
+  opacity: 0; visibility: hidden; transition: opacity .15s; pointer-events: none;
+}
+.term:hover .term-pop, .term:focus .term-pop { opacity: 1; visibility: visible; }
+.term-pop span { display: block; }
+.term-name { font-weight: 800; margin-bottom: .2rem; color: #c7c2ff; }
+.term-tech { margin-top: .4rem; opacity: .8; font-size: .8rem; }
+.term-tech b { color: #fff; }
+
+/* ---------- algorithm flow ---------- */
+.flow { display: flex; flex-direction: column; gap: 0; margin: 1.2rem 0; }
+.flow-step { display: flex; gap: .9rem; position: relative; padding-bottom: 1rem; }
+.flow-step::before { content: ''; position: absolute; left: 15px; top: 34px; bottom: 0; width: 2px; background: var(--line); }
+.flow > .flow-step:last-child::before { display: none; }
+.flow-n { flex: none; width: 32px; height: 32px; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 800; display: grid; place-items: center; font-size: .9rem; z-index: 1; }
+.flow-body { flex: 1; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: .65rem .9rem; box-shadow: var(--shadow); }
+.flow-title { font-weight: 700; font-size: 1rem; }
+.flow-what { color: #2b324a; font-size: .94rem; }
+.flow-ex { margin-top: .4rem; font-size: .86rem; background: #fff8eb; border: 1px solid #fde3b0; border-radius: 8px; padding: .3rem .6rem; font-variant-numeric: tabular-nums; }
+.flow-ex span { font-size: .68rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; color: #b45309; margin-right: .5rem; }
+.flow-see { margin-top: .4rem; border: 0; background: none; padding: 0; color: var(--accent); font-weight: 600; font-size: .84rem; cursor: pointer; }
+.flow-see:hover { text-decoration: underline; }
+.flow-loop { position: relative; border: 2px dashed #b9b3f5; border-radius: 16px; padding: 1.4rem .8rem .3rem; margin: .3rem 0 1rem; background: #f8f7ff; }
+.flow-loop-label { position: absolute; top: -.75rem; left: 1rem; background: var(--accent); color: #fff; font-size: .7rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; padding: .15rem .6rem; border-radius: 999px; }
+.flow-loop .flow-step:last-of-type::before { display: none; }
+.flow-loop-note { font-size: .88rem; color: var(--accent); font-weight: 600; padding: 0 .3rem .7rem 2.9rem; }
+
+/* ---------- key terms ---------- */
+.keyterms { margin-top: 1.4rem; border-top: 1px solid var(--line); padding-top: 1rem; }
+.keyterms .box-title { color: var(--muted); }
+.keyterms dl { margin: 0; display: grid; gap: .55rem; }
+.keyterm { display: grid; grid-template-columns: 180px 1fr; gap: 1rem; font-size: .9rem; }
+@media (max-width: 700px) { .keyterm { grid-template-columns: 1fr; gap: .1rem; } }
+.keyterm dt { font-weight: 700; }
+.keyterm dd { margin: 0; }
+.keyterm-tech { display: block; color: var(--muted); font-size: .82rem; }

@@ -1,10 +1,26 @@
 import type { Lesson } from './types'
 
 export const logistic: Lesson = {
-  tagline: 'Draw a dividing line between two classes and turn distance from it into a probability.',
+  tagline: 'Answer a yes/no question (will this student pass?) and say how sure you are (e.g. 85% sure).',
   problem: 'A school wants to know early which students will pass or fail, using measurements like hours studied and hours slept — and how sure it can be.',
-  goal: 'Learn a straight dividing line plus a probability for each student that keeps log loss low, giving good accuracy, precision and recall on unseen students.',
+  goal: 'Learn a line that separates students who passed from those who failed, turn each student’s distance from that line into a chance of passing, and check it is right on students it has never seen.',
   chapters: [
+    {
+      title: 'The whole algorithm in one flow',
+      story: ['Everything logistic regression does, start to finish. Example: predicting pass (1) or fail (0) from hours studied. Hover any underlined word for its meaning.'],
+      flow: [
+        { step: 'Collect examples', what: 'Past students with **features** (hours, sleep) and a **label**: pass = 1, fail = 0.', see: 'The problem: yes or no' },
+        { step: 'Prepare', what: 'Rescale features to similar sizes, and hide 25% as the **test set**.' },
+        { step: 'Start with a guess', what: 'All **weights** = 0, so every student gets score 0 → 50% chance.', example: 'p = 0.5 for everyone' },
+        { step: 'Score each student', what: 'Weighted sum of the features: z = w × hours + b. This is the **log-odds**.', example: 'Later in training: z = 1.2 × 7 − 6 = 2.4', loopStart: true, see: 'The decision boundary' },
+        { step: 'Turn the score into a chance', what: 'Squash z with the **sigmoid** into a **probability** between 0 and 1.', example: 'σ(2.4) = 0.92 → 92% chance of passing', see: 'The trick: an S-shaped curve' },
+        { step: 'Measure the mistakes', what: 'Compute the **log loss**: confident wrong answers cost a lot.', example: 'A passer given 10% costs 2.3; given 90% costs 0.1', see: 'How it learns' },
+        { step: 'Nudge the line', what: 'Each student pulls by (probability − label). **Gradient descent** moves the weights a small step.', example: 'Passer at 23% → error −0.77 → strong pull', loopEnd: 'Repeat steps 4–7 a few hundred times until the loss stops falling.', see: 'How it learns' },
+        { step: 'Final model', what: 'The **decision boundary** is where z = 0 (a 50/50 chance). One side → pass, other side → fail.', example: 'z = 1.2 × hours − 6 → boundary at 5 hours', see: 'The decision boundary' },
+        { step: 'Grade it honestly', what: 'On hidden students: **accuracy**, **precision**, **recall** and the **confusion matrix**.', see: 'Grading: accuracy is not enough' },
+        { step: 'Use it', what: 'New student → score → probability → pass if above 50% (the **threshold**).', example: '3 hours → z = −2.4 → 8% → at risk' },
+      ],
+    },
     {
       title: 'The problem: yes or no',
       story: [

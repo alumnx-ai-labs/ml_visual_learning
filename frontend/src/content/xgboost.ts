@@ -1,10 +1,24 @@
 import type { Lesson } from './types'
 
 export const xgboost: Lesson = {
-  tagline: 'Add small trees one at a time, each one fixing the mistakes the others still make.',
+  tagline: 'Make a rough guess, then keep adding small corrections, each one fixing what is still wrong, until the guess is very close.',
   problem: 'A real-estate company needs house-price predictions as accurate as possible. A random forest\'s trees work independently, so none of them learns from the others\' mistakes.',
-  goal: 'Build small trees in sequence, each correcting the errors still left, and stop before test error starts rising, to reach the lowest possible test error.',
+  goal: 'Start with a rough guess (the average price), then add small corrections one by one, each aimed at the mistakes still left, and stop before it starts memorising flukes.',
   chapters: [
+    {
+      title: 'The whole algorithm in one flow',
+      story: ['Everything XGBoost does, start to finish, on 4 houses priced 200, 250, 300, 450. Hover any underlined word for its meaning.'],
+      flow: [
+        { step: 'Collect examples', what: 'Houses with **features** (size) and a **target** (price). Hide 25% as the **test set**.' },
+        { step: 'Start with the average', what: 'Every house gets the same first **prediction**: the average price.', example: '300, 300, 300, 300', see: 'Step 0: start with the average' },
+        { step: 'Find what is still wrong', what: 'For each house: **residuals** = actual − current prediction.', example: '−100, −50, 0, +150', loopStart: true, see: 'Step 0: start with the average' },
+        { step: 'Fit a small tree to the mistakes', what: 'Train a shallow **decision tree** (a **weak learner**) to predict those residuals. **λ** shrinks its answers.', example: 'size ≤ 1800 → −50, else → +150', see: 'Each tree learns the residuals' },
+        { step: 'Add a fraction of it', what: 'New prediction = old + **learning rate** × tree answer.', example: '0.5 × tree → 275, 275, 275, 375', see: 'Each tree learns the residuals' },
+        { step: 'Check progress', what: 'Compute training and test error after this tree.', example: 'RMSE 93.5 → 55.9 → 35.4', loopEnd: 'Repeat steps 3–6, adding one tree per round, until the test error stops improving (early stopping).', see: 'When to stop' },
+        { step: 'Final model', what: 'Average + 0.5 × tree₁ + 0.5 × tree₂ + … — a **boosting** **ensemble**.', example: 'House D: 300 → 375 → 400 → … → close to 450' },
+        { step: 'Use it', what: 'A new house goes through every tree and the corrections are added up. (For yes/no, the sum is squashed with the **sigmoid**.)' },
+      ],
+    },
     {
       title: 'The idea: learn from mistakes',
       story: [

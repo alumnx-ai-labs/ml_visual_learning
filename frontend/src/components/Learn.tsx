@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useState, type ReactNode } from 'react'
 import { LESSONS, PRIMER } from '../content'
-import type { Chapter, Example, Quiz } from '../content/types'
+import { findTerm, type Term } from '../content/terms'
+import type { Chapter, Example, FlowStep, Quiz } from '../content/types'
 import type { AlgoSpec } from '../types'
 import { Figure } from './Figures'
 import { Tex } from './ui'
@@ -14,11 +15,91 @@ function Rich({ text }: { text: string }) {
   return (
     <>
       {parts.map((p, i) =>
-        p.startsWith('**') ? <strong key={i}>{p.slice(2, -2)}</strong>
+        p.startsWith('**') ? <BoldOrTerm key={i} text={p.slice(2, -2)} />
           : p.startsWith('$') && p.length > 1 ? <Tex key={i}>{p.slice(1, -1)}</Tex>
             : p.split(/(\*[^*]+\*)/g).map((q, j) => (q.startsWith('*') && q.length > 2 ? <em key={i + '-' + j}>{q.slice(1, -1)}</em> : <Fragment key={i + '-' + j}>{q}</Fragment>)),
       )}
     </>
+  )
+}
+
+function TermTip({ term, children }: { term: Term; children: ReactNode }) {
+  return (
+    <span className="term" tabIndex={0}>
+      {children}
+      <span className="term-pop" role="tooltip">
+        <span className="term-name">{term.name}</span>
+        <span className="term-plain">{term.plain}</span>
+        <span className="term-tech"><b>Technically:</b> {term.tech}</span>
+      </span>
+    </span>
+  )
+}
+
+function BoldOrTerm({ text }: { text: string }) {
+  const t = findTerm(text)
+  return t ? <TermTip term={t}><strong>{text}</strong></TermTip> : <strong>{text}</strong>
+}
+
+/** Every glossary term a chapter mentions in bold, in order of first appearance. */
+function chapterTerms(ch: Chapter): Term[] {
+  const texts = [...ch.story, ch.plain ?? '', ...(ch.tech ?? []), ...(ch.example?.after ?? []), ch.example?.intro ?? '',
+    ...(ch.flow ?? []).flatMap((f) => [f.what])]
+  const found = new Map<string, Term>()
+  for (const t of texts) for (const m of t.matchAll(/\*\*([^*]+)\*\*/g)) {
+    const term = findTerm(m[1])
+    if (term && !found.has(term.name)) found.set(term.name, term)
+  }
+  return [...found.values()]
+}
+
+function FlowView({ steps, goChapter }: { steps: FlowStep[]; goChapter: (title: string) => void }) {
+  const out: ReactNode[] = []
+  let loop: ReactNode[] | null = null
+  steps.forEach((s, i) => {
+    const node = (
+      <div className="flow-step" key={i}>
+        <div className="flow-n">{i + 1}</div>
+        <div className="flow-body">
+          <div className="flow-title">{s.step}</div>
+          <div className="flow-what"><Rich text={s.what} /></div>
+          {s.example && <div className="flow-ex"><span>Example</span>{s.example}</div>}
+          {s.see && <button className="flow-see" onClick={() => goChapter(s.see!)}>Explained in: {s.see} →</button>}
+        </div>
+      </div>
+    )
+    if (s.loopStart) loop = []
+    if (loop) loop.push(node)
+    else out.push(node)
+    if (s.loopEnd && loop) {
+      out.push(
+        <div className="flow-loop" key={'loop' + i}>
+          <div className="flow-loop-label">Repeat</div>
+          {loop}
+          <div className="flow-loop-note"><Rich text={s.loopEnd} /></div>
+        </div>,
+      )
+      loop = null
+    }
+  })
+  return <div className="flow">{out}</div>
+}
+
+function KeyTerms({ ch }: { ch: Chapter }) {
+  const terms = chapterTerms(ch)
+  if (!terms.length) return null
+  return (
+    <div className="keyterms">
+      <div className="box-title">Key terms in this chapter</div>
+      <dl>
+        {terms.map((t) => (
+          <div key={t.name} className="keyterm">
+            <dt>{t.name}</dt>
+            <dd>{t.plain}<span className="keyterm-tech">{t.tech}</span></dd>
+          </div>
+        ))}
+      </dl>
+    </div>
   )
 }
 
@@ -74,12 +155,13 @@ function QuizBox({ quiz }: { quiz: Quiz }) {
   )
 }
 
-export function ChapterView({ ch, n, goTo }: { ch: Chapter; n: number; goTo: (t: Tab) => void }) {
+export function ChapterView({ ch, n, goTo, goChapter = () => {} }: { ch: Chapter; n: number; goTo: (t: Tab) => void; goChapter?: (title: string) => void }) {
   return (
     <article className="chapter" key={ch.title}>
       <div className="chapter-kicker">Chapter {n}</div>
       <h2 className="chapter-title">{ch.title}</h2>
       <div className="story"><Blocks items={ch.story} /></div>
+      {ch.flow && <FlowView steps={ch.flow} goChapter={goChapter} />}
       {ch.figure && <Figure kind={ch.figure} />}
       {ch.plain && <Box kind="plain" title="In plain words"><p><Rich text={ch.plain} /></p></Box>}
       {ch.example && <ExampleBox ex={ch.example} />}
@@ -96,6 +178,7 @@ export function ChapterView({ ch, n, goTo }: { ch: Chapter; n: number; goTo: (t:
           {ch.tryIt.tab && <button className="btn primary" onClick={() => goTo(ch.tryIt!.tab!)}>Open the {ch.tryIt.tab === 'watch' ? 'Watch it learn' : ch.tryIt.tab === 'data' ? 'Data' : 'Results'} tab</button>}
         </Box>
       )}
+      <KeyTerms ch={ch} />
     </article>
   )
 }
@@ -123,8 +206,8 @@ export function Learn({ algo, goTo }: { algo: AlgoSpec; goTo: (t: Tab) => void }
         <h1>{algo.name}</h1>
         <p>{L.tagline}</p>
         <div className="hero-cards">
-          <div className="hero-card"><div className="hero-card-label">Problem statement</div>{L.problem}</div>
-          <div className="hero-card"><div className="hero-card-label">Goal</div>{L.goal}</div>
+          <div className="hero-card"><div className="hero-card-label">Problem statement</div><Rich text={L.problem} /></div>
+          <div className="hero-card"><div className="hero-card-label">Goal</div><Rich text={L.goal} /></div>
         </div>
         <div className="progress"><div style={{ width: `${(seen.size / total) * 100}%` }} /></div>
         <div className="small" style={{ opacity: 0.85 }}>{seen.size} of {total} sections visited</div>
@@ -143,7 +226,7 @@ export function Learn({ algo, goTo }: { algo: AlgoSpec; goTo: (t: Tab) => void }
         </nav>
 
         <div>
-          {!isCheat ? <ChapterView ch={chapters[idx]} n={idx} goTo={goTo} /> : <CheatSheet algoId={algo.id} algo={algo} />}
+          {!isCheat ? <ChapterView ch={chapters[idx]} n={idx} goTo={goTo} goChapter={(t) => { const i = chapters.findIndex((c) => c.title === t); if (i >= 0) go(i) }} /> : <CheatSheet algoId={algo.id} algo={algo} />}
           <div className="pager">
             <button className="btn" disabled={idx === 0} onClick={() => go(idx - 1)}>← Previous</button>
             <span className="small muted">{idx + 1} / {total}</span>

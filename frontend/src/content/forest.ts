@@ -1,10 +1,25 @@
 import type { Lesson } from './types'
 
 export const forest: Lesson = {
-  tagline: 'Grow many different decision trees on random samples of the data, then let them vote.',
+  tagline: 'Ask many simple yes/no question flowcharts for their answer, and go with what most of them say.',
   problem: 'A plant nursery wants to predict whether a plant will thrive or wilt from temperature and humidity. Plants only thrive in a middle zone, so no straight line can separate the two groups.',
-  goal: 'Combine many different decision trees into one vote that can follow any shape of boundary without memorising noise, measured by test accuracy and the out-of-bag score.',
+  goal: 'Build many small question flowcharts, each from a slightly different random sample of the plants, and let them vote, so the answer can follow any shape without memorising flukes.',
   chapters: [
+    {
+      title: 'The whole algorithm in one flow',
+      story: ['Everything a random forest does, start to finish. Example: thrive or wilt from temperature and humidity. Hover any underlined word for its meaning.'],
+      flow: [
+        { step: 'Collect examples', what: 'Plants with **features** (temperature, humidity) and a **label** (thrive / wilt). Hide 25% as the **test set**.', see: 'The problem, and the decision tree' },
+        { step: 'Choose settings', what: 'How many trees (e.g. 100), how deep each tree may grow.', example: '100 trees, max depth 4' },
+        { step: 'Draw a random sample', what: 'For this tree, pick rows at random with replacement: a **bootstrap** sample. Unpicked rows are **out-of-bag**.', example: 'rows 2, 5, 5, 1, 7, 2, 8, 3 (rows 4, 6 left out)', loopStart: true, see: 'Making the trees different' },
+        { step: 'Ask the best question', what: 'At a **node**, look at a random subset of features, try every threshold, and keep the **split** that lowers **Gini** the most.', example: '"temp ≤ 15?" → Gini 0.50 → 0.17', see: 'How a tree picks its questions' },
+        { step: 'Keep splitting', what: 'Repeat inside each group until max depth or the group is pure. Each end box is a **leaf** holding the majority answer.', example: 'leaf: 4 wilt, 0 thrive → WILTS' },
+        { step: 'One tree done', what: 'This **decision tree** is now a full flowchart.', loopEnd: 'Repeat steps 3–6 for every tree (each with its own random sample).' },
+        { step: 'Predict', what: 'Send a new plant down every tree; each tree answers.', example: 'thrive, wilt, thrive, thrive, wilt', see: 'The vote' },
+        { step: 'Vote', what: '**Majority vote** for classes, average for numbers.', example: '3 of 5 say thrive → THRIVE (60%)', see: 'The vote' },
+        { step: 'Grade it honestly', what: 'Test-set accuracy, the free **out-of-bag** score, and **feature importance**.', see: 'Bonus and limits' },
+      ],
+    },
     {
       title: 'The problem, and the decision tree',
       story: [

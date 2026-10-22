@@ -17,8 +17,21 @@ export interface Quiz {
   why: string
 }
 
+export interface FlowStep {
+  step: string
+  what: string
+  /** the running example's numbers at this step */
+  example?: string
+  /** title of the chapter that explains this step */
+  see?: string
+  /** marks the start/end of the repeating part of the algorithm */
+  loopStart?: boolean
+  loopEnd?: string
+}
+
 export interface Chapter {
   title: string
+  flow?: FlowStep[]
   /** the narrative — what happens next in the story */
   story: string[]
   /** layman version ("explain it to a friend") */

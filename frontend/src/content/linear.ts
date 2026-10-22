@@ -1,10 +1,26 @@
 import type { Lesson } from './types'
 
 export const linear: Lesson = {
-  tagline: 'Draw the straight line that best fits the points, then use it to predict.',
+  tagline: 'Predict a number (like an exam score) from another number (like hours studied) by finding the simple rule that connects them.',
   problem: 'A teacher has past students\' hours studied and exam scores. Given a new student\'s study hours, predict the exam score they will get.',
-  goal: 'Find the straight line (slope and intercept) with the smallest average squared error, and confirm it predicts unseen students well (high R², low RMSE).',
+  goal: 'Find the rule "score = (points per hour) × hours + (starting score)" that makes the smallest mistakes on past students, then check it also works on students it has never seen.',
   chapters: [
+    {
+      title: 'The whole algorithm in one flow',
+      story: ['Here is everything linear regression does, start to finish, on 4 students: (1 h, 45), (3 h, 52), (5 h, 68), (7 h, 74). Hover any underlined word for its meaning. Each step links to the chapter that explains it.'],
+      flow: [
+        { step: 'Collect examples', what: 'Gather past students with their **feature** (hours) and **target** (score).', example: '(1, 45), (3, 52), (5, 68), (7, 74)', see: 'The problem' },
+        { step: 'Hide some for testing', what: 'Keep 75% as the **training set**, hide 25% as the **test set**.', example: 'The app hides 1 in 4 points.', see: 'Checking it, and its limits' },
+        { step: 'Start with a guess', what: 'Pick any line, e.g. **slope** 0 and **intercept** 0 (a flat line at zero).', example: 'score = 0 × hours + 0', see: 'The idea: a straight line' },
+        { step: 'Predict every training point', what: 'Use the current line to make a **prediction** for each student.', example: 'All 4 predictions are 0', loopStart: true },
+        { step: 'Measure the mistakes', what: 'Compute each **residual** and average their squares: the **MSE**.', example: 'MSE = (45² + 52² + 68² + 74²) / 4 = 3707', see: 'Measuring mistakes' },
+        { step: 'Find the downhill direction', what: 'The **gradient** says how to change slope and intercept to reduce the MSE.', example: 'slope should go up a lot, intercept up a bit', see: 'Finding the best line: walk downhill' },
+        { step: 'Take a small step', what: 'Move slope and intercept a little that way. Step size = **learning rate**.', example: 'learning rate 0.01 → slope 5.3, intercept 1.2', loopEnd: 'Repeat steps 4–7 a few hundred times until the MSE stops falling. This is gradient descent.' },
+        { step: 'Final model', what: 'The line has settled at the bottom of the loss bowl. (Or jump straight here with the exact **OLS** formula.)', example: 'score = 5.15 × hours + 39.15', see: 'The shortcut formula' },
+        { step: 'Grade it honestly', what: 'Predict the hidden test students and compute **R²** and **RMSE**.', example: 'R² ≈ 0.97 → explains 97% of the differences', see: 'Checking it, and its limits' },
+        { step: 'Use it', what: 'Plug in a new student\'s hours.', example: '7 hours → 5.15 × 7 + 39.15 ≈ 75 points' },
+      ],
+    },
     {
       title: 'The problem',
       story: [
