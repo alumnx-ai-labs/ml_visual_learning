@@ -122,6 +122,10 @@ export function Learn({ algo, goTo }: { algo: AlgoSpec; goTo: (t: Tab) => void }
         <div className="hero-eyebrow">{algo.category === 'supervised' ? 'Supervised learning' : 'Unsupervised learning'} · {algo.tasks.join(' & ')}</div>
         <h1>{algo.name}</h1>
         <p>{L.tagline}</p>
+        <div className="hero-cards">
+          <div className="hero-card"><div className="hero-card-label">Problem statement</div>{L.problem}</div>
+          <div className="hero-card"><div className="hero-card-label">Goal</div>{L.goal}</div>
+        </div>
         <div className="progress"><div style={{ width: `${(seen.size / total) * 100}%` }} /></div>
         <div className="small" style={{ opacity: 0.85 }}>{seen.size} of {total} sections visited</div>
       </section>

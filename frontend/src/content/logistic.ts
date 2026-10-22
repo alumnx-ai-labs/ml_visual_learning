@@ -2,6 +2,8 @@ import type { Lesson } from './types'
 
 export const logistic: Lesson = {
   tagline: 'Draw a dividing line between two classes and turn distance from it into a probability.',
+  problem: 'A school wants to know early which students will pass or fail, using measurements like hours studied and hours slept — and how sure it can be.',
+  goal: 'Learn a straight dividing line plus a probability for each student that keeps log loss low, giving good accuracy, precision and recall on unseen students.',
   chapters: [
     {
       title: 'The problem: yes or no',

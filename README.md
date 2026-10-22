@@ -4,6 +4,15 @@ An interactive web app for learning supervised machine-learning algorithms from 
 
 **Models:** Linear Regression · Logistic Regression · Random Forest · XGBoost
 
+Each lesson starts with a problem statement and a goal:
+
+| Model | Problem statement | Goal |
+|---|---|---|
+| Linear Regression | Predict a student's exam score from hours studied. | Find the straight line with the smallest average squared error that also predicts unseen students well. |
+| Logistic Regression | Predict whether a student will pass or fail, and how likely. | Learn a dividing line plus probabilities with low log loss and good accuracy, precision and recall. |
+| Random Forest | Predict whether a plant thrives or wilts when no straight line separates the groups. | Combine many different trees into a vote that follows any boundary shape without overfitting. |
+| XGBoost | Predict house prices as accurately as possible. | Add small trees in sequence, each fixing the remaining errors, and stop before test error rises. |
+
 Each model has four tabs:
 
 | Tab | What you get |

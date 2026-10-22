@@ -2,6 +2,8 @@ import type { Lesson } from './types'
 
 export const xgboost: Lesson = {
   tagline: 'Add small trees one at a time, each one fixing the mistakes the others still make.',
+  problem: 'A real-estate company needs house-price predictions as accurate as possible. A random forest\'s trees work independently, so none of them learns from the others\' mistakes.',
+  goal: 'Build small trees in sequence, each correcting the errors still left, and stop before test error starts rising, to reach the lowest possible test error.',
   chapters: [
     {
       title: 'The idea: learn from mistakes',

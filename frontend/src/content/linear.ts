@@ -2,6 +2,8 @@ import type { Lesson } from './types'
 
 export const linear: Lesson = {
   tagline: 'Draw the straight line that best fits the points, then use it to predict.',
+  problem: 'A teacher has past students\' hours studied and exam scores. Given a new student\'s study hours, predict the exam score they will get.',
+  goal: 'Find the straight line (slope and intercept) with the smallest average squared error, and confirm it predicts unseen students well (high R², low RMSE).',
   chapters: [
     {
       title: 'The problem',

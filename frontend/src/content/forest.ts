@@ -2,6 +2,8 @@ import type { Lesson } from './types'
 
 export const forest: Lesson = {
   tagline: 'Grow many different decision trees on random samples of the data, then let them vote.',
+  problem: 'A plant nursery wants to predict whether a plant will thrive or wilt from temperature and humidity. Plants only thrive in a middle zone, so no straight line can separate the two groups.',
+  goal: 'Combine many different decision trees into one vote that can follow any shape of boundary without memorising noise, measured by test accuracy and the out-of-bag score.',
   chapters: [
     {
       title: 'The problem, and the decision tree',

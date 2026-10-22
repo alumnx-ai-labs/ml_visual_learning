@@ -33,6 +33,8 @@ export interface Chapter {
 
 export interface Lesson {
   tagline: string
+  problem: string
+  goal: string
   chapters: Chapter[]
   cheat: {
     formulas: { name: string; tex: string }[]
