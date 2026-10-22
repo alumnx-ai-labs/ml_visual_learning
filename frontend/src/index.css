@@ -243,3 +243,16 @@ pre.flow { background: #fff; border-radius: 10px; padding: .9rem 1.1rem; font-si
 .keyterm-ex b { color: #b45309; }
 .keyterm-tech { display: block; margin-top: .2rem; color: var(--muted); font-size: .82rem; }
 .keyterm-tech b { color: var(--ink); font-weight: 600; }
+
+/* ---------- watch-tab explanations ---------- */
+.guide { background: var(--panel); border: 1px solid var(--line); border-left: 5px solid var(--accent); border-radius: var(--radius); padding: 1rem 1.3rem; box-shadow: var(--shadow); }
+.guide-label, .narration-stage { font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; color: var(--accent); margin-bottom: .2rem; }
+.guide h3 { margin: 0 0 .3rem; }
+.guide ol { margin: 0; padding-left: 1.3rem; } .guide li { margin-bottom: .3rem; }
+.narration { background: linear-gradient(135deg, #f5f3ff, #eef2ff); border: 1px solid #d9d4fb; border-radius: var(--radius); padding: 1rem 1.3rem; min-height: 9.5rem; }
+.narration.warn { background: var(--warn-bg); border-color: #fbc9a8; } .narration.warn .narration-stage { color: var(--bad); }
+.narration.good { background: #eaf8f2; border-color: #bfe8d6; } .narration.good .narration-stage { color: var(--good); }
+.narration-title { font-size: 1.08rem; font-weight: 700; margin-bottom: .35rem; }
+.narration p { margin: 0 0 .35rem; }
+.chart-note { margin-top: .6rem; font-size: .86rem; color: var(--muted); border-top: 1px dashed var(--line); padding-top: .55rem; }
+.chart-note p { margin: 0 0 .3rem; } .chart-note b { color: var(--ink); }

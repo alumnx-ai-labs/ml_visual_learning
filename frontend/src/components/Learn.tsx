@@ -1,46 +1,13 @@
 import { Fragment, useEffect, useState, type ReactNode } from 'react'
 import { LESSONS, PRIMER } from '../content'
 import { findTerm, type Term } from '../content/terms'
+import { Rich } from './Rich'
 import type { Chapter, Example, FlowStep, Quiz } from '../content/types'
 import type { AlgoSpec } from '../types'
 import { Figure } from './Figures'
 import { Tex } from './ui'
 
 type Tab = 'data' | 'watch' | 'results'
-
-/** Renders **bold** and $inline math$ inside a text block; a block starting with $$ is a display formula. */
-function Rich({ text }: { text: string }) {
-  if (text.startsWith('$$')) return <Tex block>{text.slice(2)}</Tex>
-  const parts = text.split(/(\*\*[^*]+\*\*|\$[^$]+\$)/g)
-  return (
-    <>
-      {parts.map((p, i) =>
-        p.startsWith('**') ? <BoldOrTerm key={i} text={p.slice(2, -2)} />
-          : p.startsWith('$') && p.length > 1 ? <Tex key={i}>{p.slice(1, -1)}</Tex>
-            : p.split(/(\*[^*]+\*)/g).map((q, j) => (q.startsWith('*') && q.length > 2 ? <em key={i + '-' + j}>{q.slice(1, -1)}</em> : <Fragment key={i + '-' + j}>{q}</Fragment>)),
-      )}
-    </>
-  )
-}
-
-function TermTip({ term, children }: { term: Term; children: ReactNode }) {
-  return (
-    <span className="term" tabIndex={0}>
-      {children}
-      <span className="term-pop" role="tooltip">
-        <span className="term-name">{term.name}</span>
-        <span className="term-plain">{term.plain}</span>
-        <span className="term-ex"><b>Example:</b> {term.example}</span>
-        <span className="term-tech"><b>Technically:</b> {term.tech}</span>
-      </span>
-    </span>
-  )
-}
-
-function BoldOrTerm({ text }: { text: string }) {
-  const t = findTerm(text)
-  return t ? <TermTip term={t}><strong>{text}</strong></TermTip> : <strong>{text}</strong>
-}
 
 /** Every glossary term a chapter mentions in bold, in order of first appearance. */
 function chapterTerms(ch: Chapter): Term[] {
