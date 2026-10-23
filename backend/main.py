@@ -6,14 +6,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 import datasets
-from algos import dbscan, forest, kmeans, linear, logistic, pca, xgb
+from algos import dbscan, forest, hierarchical, kmeans, linear, logistic, pca, xgb
 from algos.common import r
 
 warnings.filterwarnings("ignore", message="Some inputs do not have OOB scores")
 
-# Unsupervised modules (kmeans, dbscan, pca) are implemented but parked: add them here to expose them again.
-ALGOS = {m.SPEC["id"]: m for m in [linear, logistic, forest, xgb]}
-_PARKED = (kmeans, dbscan, pca)
+ALGOS = {m.SPEC["id"]: m for m in [linear, logistic, forest, xgb, kmeans, dbscan, pca, hierarchical]}
 
 app = FastAPI(title="ML Learning Lab")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
@@ -21,6 +19,7 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], all
 
 @app.get("/api/meta")
 def meta():
+    # the playground only works with supervised data; unsupervised models are taught through guided lessons
     supervised = {"regression", "classification"}
     cat = [d for d in datasets.public_catalog() if supervised & set(d["tasks"])]
     return dict(algorithms=[m.SPEC for m in ALGOS.values()], datasets=cat)
@@ -29,7 +28,7 @@ def meta():
 class RunRequest(BaseModel):
     algo: str
     dataset: str
-    n: int = Field(200, ge=30, le=500)
+    n: int = Field(200, ge=10, le=500)
     noise: float | None = None
     seed: int = 42
     params: dict = {}

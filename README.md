@@ -1,8 +1,10 @@
 # ML Visual Learning Lab
 
-An interactive web app for learning supervised machine-learning algorithms from scratch. Pick a model from the dropdown, read a short guided lesson, then watch the model train on real data step by step.
+An interactive web app for learning machine-learning algorithms from scratch. Pick a model from the dropdown and click through a short guided lesson: one picture per slide, animated where it helps, with every technical word explained.
 
-**Models:** Linear Regression · Logistic Regression · Random Forest · XGBoost
+**Supervised:** Linear Regression · Logistic Regression · Random Forest · XGBoost
+
+**Unsupervised:** K-Means · DBSCAN · PCA · Hierarchical Clustering
 
 Each lesson starts with a problem statement and a goal:
 
@@ -23,8 +25,12 @@ Each model opens as a short slide deck built on a simple story. Click **Next** o
 | Logistic Regression | Hours studied + slept → pass or fail |
 | Random Forest | Temperature + humidity → plant thrives or wilts |
 | XGBoost | House size → price |
+| K-Means | Shop customers (income vs spending) → customer types |
+| DBSCAN | Taxi pickups → busy zones and strays |
+| PCA | Height and weight → one "size" number; then 4 iris measurements → 2 |
+| Hierarchical Clustering | 21 stores on a map → a family tree of groups |
 
-### Playground (advanced)
+### Playground (advanced, supervised models only)
 
 Switch to **Playground (advanced)** in the header to pick datasets, change noise and model settings, and explore four tabs:
 
@@ -108,13 +114,16 @@ backend/
     logistic.py      Gradient descent trace of the decision boundary
     forest.py        Per-tree bootstrap samples, tree structures, votes on a grid
     xgb.py           Prediction and loss after every boosting round
-    kmeans.py, dbscan.py, pca.py   Unsupervised models (implemented, currently hidden)
+    kmeans.py        Every assign/move round, plus elbow and silhouette for k = 1..8
+    dbscan.py        The order in which zones grow, point roles, neighbour counts
+    pca.py           Components, explained variance, spread at every angle
+    hierarchical.py  Every merge with its distance and dendrogram geometry
   smoke_test.py      Runs every model on every compatible dataset
 frontend/src/
   App.tsx            Layout, dropdown, controls, tabs
   content/           Lesson text for each model (edit these to change the lessons)
   components/        Learn, Data and Results tabs, chart primitives
-  slides/            Guided lesson slide decks, one per model
+  slides/            Guided lesson slide decks, one per model (supervised and unsupervised)
   viz/               The "Watch it learn" animation for each model (Playground)
 ```
 
@@ -130,7 +139,3 @@ frontend/src/
 - **"Could not reach the backend"** in the app: the backend isn't running, or isn't on port 8000. Start it as in step 2.
 - **`pip install` fails on xgboost/scikit-learn:** upgrade pip first (`python -m pip install --upgrade pip`) and make sure you are on Python 3.10 or newer.
 - **Port 5173 already in use:** Vite will pick the next free port and print it in the terminal. Use that URL.
-
-## Re-enabling the unsupervised models
-
-K-Means, DBSCAN and PCA are implemented in `backend/algos/` but hidden. To expose them, add them to `ALGOS` in `backend/main.py`. They would also need lesson content and "Watch it learn" views in the frontend.

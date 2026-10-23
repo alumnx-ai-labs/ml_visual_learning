@@ -2,6 +2,8 @@
  * Every technical term used in the lessons. Keys are lowercase.
  * plain = everyday words, example = a tiny concrete case, tech = the formula with every symbol spelled out.
  */
+import { UNSUP_ALIASES, UNSUP_TERMS } from './termsUnsup'
+
 export interface Term { name: string; plain: string; example: string; tech: string }
 
 const T: Term[] = [
@@ -381,9 +383,10 @@ const ALIASES: Record<string, string> = {
   'loss function': 'loss', weights: 'weight', bias: 'intercept', probabilities: 'probability',
   'random forest': 'ensemble', crowd: 'ensemble', vote: 'majority vote',
   'trick 1, bootstrap:': 'bootstrap', 'trick 2, random features:': 'random feature subset', outliers: 'outlier',
+  ...UNSUP_ALIASES,
 }
 
-export const TERMS: Record<string, Term> = Object.fromEntries(T.map((t) => [t.name.toLowerCase(), t]))
+export const TERMS: Record<string, Term> = Object.fromEntries([...T, ...UNSUP_TERMS].map((t) => [t.name.toLowerCase(), t]))
 
 export function findTerm(text: string): Term | undefined {
   const k = text.toLowerCase().trim()

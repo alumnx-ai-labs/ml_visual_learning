@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { runModel } from '../api'
 import { findTerm, type Term } from '../content/terms'
+import { extent, type PlotCtx } from '../components/Plot'
 import { Rich, TermTip } from '../components/Rich'
 import type { RunResponse } from '../types'
 
@@ -146,3 +147,58 @@ export function Recap({ steps, loop }: { steps: string[]; loop?: [number, number
 export const trainOf = (run: RunResponse) => run.data.is_test.flatMap((t, i) => (t ? [] : [i]))
 export const testOf = (run: RunResponse) => run.data.is_test.flatMap((t, i) => (t ? [i] : []))
 export const pct = (v: number) => `${Math.round(v * 100)}%`
+
+// ---------- helpers for the unsupervised decks (no true labels are ever shown as colours) ----------
+export const CLUSTER_COLORS = ['var(--c0)', 'var(--c1)', 'var(--c2)', 'var(--c3)', '#7c3aed', '#0891b2', '#a16207', '#475569']
+export const clusterColor = (l: number) => (l < 0 ? '#9aa1b5' : CLUSTER_COLORS[l % CLUSTER_COLORS.length])
+export const GREY = '#9aa1b5'
+
+export function xy(run: RunResponse) {
+  const px = run.data.X.map((r) => r[0])
+  const py = run.data.X.map((r) => r[1])
+  return { px, py, xDomain: extent(px), yDomain: extent(py) }
+}
+
+/** Domains with equal pixels-per-unit on both axes, so circles look like circles and perpendicular lines look perpendicular. */
+export function equalDomains(px: number[], py: number[], height: number, pad = 0.08): { xDomain: [number, number]; yDomain: [number, number] } {
+  const w = 570 // matches the Plot frame: width 640 minus margins
+  const h = height - 60
+  const cx = (Math.min(...px) + Math.max(...px)) / 2
+  const cy = (Math.min(...py) + Math.max(...py)) / 2
+  const unit = Math.max((Math.max(...px) - Math.min(...px)) / w, (Math.max(...py) - Math.min(...py)) / h) * (1 + pad)
+  return { xDomain: [cx - (unit * w) / 2, cx + (unit * w) / 2], yDomain: [cy - (unit * h) / 2, cy + (unit * h) / 2] }
+}
+
+export interface DotsProps {
+  px: number[]
+  py: number[]
+  ctx: PlotCtx
+  color?: (i: number) => string
+  r?: number
+  opacity?: (i: number) => number
+  only?: (i: number) => boolean
+  hollow?: (i: number) => boolean
+}
+
+export function Dots({ px, py, ctx, color = () => GREY, r = 5, opacity, only, hollow }: DotsProps) {
+  return (
+    <g>
+      {px.map((x, i) => {
+        if (only && !only(i)) return null
+        const c = color(i)
+        const ring = hollow?.(i)
+        return <circle key={i} cx={ctx.sx(x)} cy={ctx.sy(py[i])} r={r} fill={ring ? 'var(--panel2)' : c} stroke={ring ? c : '#fff'} strokeWidth={ring ? 2.2 : 1} opacity={opacity ? opacity(i) : 0.92} />
+      })}
+    </g>
+  )
+}
+
+/** A star-shaped marker for centres. */
+export function Star({ x, y, color = 'var(--ink)', size = 11 }: { x: number; y: number; color?: string; size?: number }) {
+  const pts = Array.from({ length: 10 }, (_, k) => {
+    const a = (Math.PI / 5) * k - Math.PI / 2
+    const rad = k % 2 === 0 ? size : size * 0.45
+    return `${x + rad * Math.cos(a)},${y + rad * Math.sin(a)}`
+  }).join(' ')
+  return <polygon points={pts} fill={color} stroke="#fff" strokeWidth={2} />
+}

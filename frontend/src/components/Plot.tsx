@@ -25,11 +25,13 @@ interface Props {
   yLabel?: string
   height?: number
   onPlotClick?: (x: number, y: number) => void
+  /** set false to hide the x grid and tick labels (e.g. for a dendrogram whose x positions are just leaf slots) */
+  xTicks?: boolean
   children: (c: PlotCtx) => ReactNode
 }
 
 /** A small SVG chart frame: axes, grid and scales. Children draw in data coordinates via sx/sy. */
-export function Plot({ xDomain, yDomain, xLabel, yLabel, height = 400, onPlotClick, children }: Props) {
+export function Plot({ xDomain, yDomain, xLabel, yLabel, height = 400, onPlotClick, xTicks = true, children }: Props) {
   const clipId = useId().replace(/:/g, '')
   const w = W - M.l - M.r
   const h = height - M.t - M.b
@@ -55,7 +57,7 @@ export function Plot({ xDomain, yDomain, xLabel, yLabel, height = 400, onPlotCli
       </defs>
       <g transform={`translate(${M.l},${M.t})`}>
         <g className="grid">
-          {sx.ticks(6).map((t) => (
+          {xTicks && sx.ticks(6).map((t) => (
             <line key={'gx' + t} x1={sx(t)} x2={sx(t)} y1={0} y2={h} />
           ))}
           {sy.ticks(6).map((t) => (
@@ -67,7 +69,7 @@ export function Plot({ xDomain, yDomain, xLabel, yLabel, height = 400, onPlotCli
         </g>
         <line className="axis-line" x1={0} x2={w} y1={h} y2={h} />
         <line className="axis-line" x1={0} x2={0} y1={0} y2={h} />
-        {sx.ticks(6).map((t) => (
+        {xTicks && sx.ticks(6).map((t) => (
           <text key={'tx' + t} x={sx(t)} y={h + 16} textAnchor="middle">{fmt(t)}</text>
         ))}
         {sy.ticks(6).map((t) => (

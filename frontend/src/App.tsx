@@ -9,9 +9,13 @@ import { ForestViz } from './viz/ForestViz'
 import { LinearViz } from './viz/LinearViz'
 import { LogisticViz } from './viz/LogisticViz'
 import { XgbViz } from './viz/XgbViz'
+import { DbscanDeck } from './slides/DbscanDeck'
 import { ForestDeck } from './slides/ForestDeck'
+import { HierarchicalDeck } from './slides/HierarchicalDeck'
+import { KMeansDeck } from './slides/KMeansDeck'
 import { LinearDeck } from './slides/LinearDeck'
 import { LogisticDeck } from './slides/LogisticDeck'
+import { PcaDeck } from './slides/PcaDeck'
 import { XgbDeck } from './slides/XgbDeck'
 
 const DECKS: Record<string, () => React.ReactElement> = {
@@ -19,6 +23,10 @@ const DECKS: Record<string, () => React.ReactElement> = {
   logistic: LogisticDeck,
   forest: ForestDeck,
   xgboost: XgbDeck,
+  kmeans: KMeansDeck,
+  dbscan: DbscanDeck,
+  pca: PcaDeck,
+  hierarchical: HierarchicalDeck,
 }
 
 const VIZ: Record<string, (p: { run: RunResponse }) => React.ReactElement> = {
@@ -97,14 +105,24 @@ export default function App() {
     <>
       <header className="app-header">
         <div className="brand"><div className="logo">ML</div>Visual Learning Lab</div>
-        <select className="select" style={{ fontWeight: 600, minWidth: 240 }} value={algoId} onChange={(e) => { setAlgoId(e.target.value); setRun(null) }} aria-label="Choose algorithm">
+        <select className="select" style={{ fontWeight: 600, minWidth: 240 }} value={algoId} onChange={(e) => {
+          const next = meta?.algorithms.find((a) => a.id === e.target.value)
+          setAlgoId(e.target.value)
+          setRun(null)
+          if (next?.category === 'unsupervised') setMode('lesson') // the playground only supports supervised models
+        }} aria-label="Choose algorithm">
           <optgroup label="Supervised learning">
             {meta?.algorithms.filter((a) => a.category === 'supervised').map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+          </optgroup>
+          <optgroup label="Unsupervised learning">
+            {meta?.algorithms.filter((a) => a.category === 'unsupervised').map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
           </optgroup>
         </select>
         <div className="mode-switch" role="tablist">
           <button className={mode === 'lesson' ? 'on' : ''} onClick={() => setMode('lesson')}>Guided lesson</button>
-          <button className={mode === 'playground' ? 'on' : ''} onClick={() => setMode('playground')}>Playground (advanced)</button>
+          <button className={mode === 'playground' ? 'on' : ''} disabled={algo?.category === 'unsupervised'}
+            title={algo?.category === 'unsupervised' ? 'The playground is available for the supervised models' : undefined}
+            onClick={() => setMode('playground')}>Playground (advanced)</button>
         </div>
         {mode === 'playground' && <span className="status"><span className={'dot' + (loading ? ' busy' : '')} />{loading ? 'Training model…' : run ? 'Model trained' : 'Waiting'}</span>}
       </header>

@@ -294,3 +294,4 @@ pre.flow { background: #fff; border-radius: 10px; padding: .9rem 1.1rem; font-si
 .recap-step.in-loop { border-color: #b9b3f5; background: #f8f7ff; }
 .recap-n { flex: none; width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 800; display: grid; place-items: center; }
 .recap-loop { font-size: .88rem; color: var(--accent); font-weight: 700; padding: .3rem .4rem 0; }
+.mode-switch button:disabled { opacity: .4; cursor: not-allowed; }

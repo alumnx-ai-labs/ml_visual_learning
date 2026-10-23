@@ -102,11 +102,46 @@ def _houses(n, noise, rng):
     return np.c_[size], price, ["size_sqft"], "price_lakhs", None
 
 
+def _customers(n, noise, rng):
+    # four shopper types: (annual income k, spending score 1-100)
+    centres = np.array([[28, 22], [28, 80], [85, 24], [85, 78]], float)
+    y = rng.integers(0, 4, n)
+    X = centres[y] + rng.normal(0, noise, (n, 2))
+    return X, y, ["annual_income_k", "spending_score"], "true_segment", ["savers", "impulse", "frugal", "big spenders"]
+
+
+def _pickups(n, noise, rng):
+    # two crescent-shaped busy zones of a city plus stray one-off pickups spread over the map (km)
+    n_noise = max(1, n // 6)
+    X, y = skd.make_moons(n - n_noise, noise=noise, random_state=int(rng.integers(1e9)))
+    X = X * 4 + np.array([2.0, 3.0])
+    strays = np.c_[rng.uniform(-0.5, 12.5, n_noise), rng.uniform(0.5, 8.5, n_noise)]
+    return np.vstack([X, strays]), np.r_[y, np.full(n_noise, 2)], ["east_km", "north_km"], "zone", ["west crescent", "east crescent", "stray"]
+
+
+def _stores(n, noise, rng):
+    # a small map of stores in three neighbourhoods (km)
+    centres = np.array([[2.5, 2.5], [8.5, 3.0], [5.5, 8.5]])
+    y = np.arange(n) % 3
+    X = centres[y] + rng.normal(0, noise, (n, 2))
+    return X, y, ["east_km", "north_km"], "neighbourhood", ["A", "B", "C"]
+
+
 def _spec(key, name, tasks, dims, fn, origin, noise=None, fixed_n=False, blurb=""):
     return dict(key=key, name=name, tasks=tasks, dims=dims, fn=fn, origin=origin, noise=noise, fixed_n=fixed_n, blurb=blurb)
 
 
 DATASETS = {d["key"]: d for d in [
+    _spec("customers", "Shop customers (income vs spending)", ["unsupervised"], 2, _customers,
+          "Four hidden types of shopper, each a cloud of customers around a typical (income, spending score). "
+          "The algorithm never sees which type a customer is.",
+          dict(label="Spread of each type", min=4, max=14, step=1, default=8)),
+    _spec("pickups", "Taxi pickups (two busy zones + strays)", ["unsupervised"], 2, _pickups,
+          "Pickups pile up along two curved busy streets, plus a few one-off pickups scattered anywhere on the map.",
+          dict(label="Jitter", min=0, max=0.2, step=0.01, default=0.06)),
+    _spec("stores", "Stores on a city map", ["unsupervised"], 2, _stores,
+          "Stores sit in three neighbourhoods, each a small cluster of nearby shops.",
+          dict(label="Spread of each neighbourhood", min=0.3, max=1.4, step=0.1, default=0.7)),
     _spec("exam", "Pass or fail (study + sleep)", ["classification"], 2, _exam,
           "Each student's study hours (0–10) and sleep hours (3–9) are random. Students who study and sleep more tend to pass, "
           "with some luck mixed in (the noise).",

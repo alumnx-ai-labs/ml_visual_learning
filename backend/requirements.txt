@@ -1,6 +1,7 @@
 fastapi>=0.115
 uvicorn[standard]>=0.30
 numpy>=2.0
+scipy>=1.11
 scikit-learn>=1.5
 xgboost>=2.1
 # only needed for smoke_test.py
