@@ -136,6 +136,7 @@ export function build(run: RunResponse): SlideDef[] {
       text: [
         'Each step, the computer works out which way to tilt and move the line to make the MSE smaller (that direction is the **gradient**), then moves it a little. How big each move is: the **learning rate**.',
         'Repeating this hundreds of times is called **gradient descent**. Watch the line climb into place and the red lines shrink.',
+        'Why walk step by step? For a straight line there is also an exact formula that jumps to the answer. But almost every other model (logistic regression, random forests, XGBoost, neural networks) has no such formula, so walking downhill is the method that works everywhere. A straight line is the easiest place to learn it.',
       ],
       frames: path.length,
       fps: 14,

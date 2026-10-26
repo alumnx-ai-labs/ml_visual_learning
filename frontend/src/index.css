@@ -295,3 +295,5 @@ pre.flow { background: #fff; border-radius: 10px; padding: .9rem 1.1rem; font-si
 .recap-n { flex: none; width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 800; display: grid; place-items: center; }
 .recap-loop { font-size: .88rem; color: var(--accent); font-weight: 700; padding: .3rem .4rem 0; }
 .mode-switch button:disabled { opacity: .4; cursor: not-allowed; }
+.nudge { padding: .4rem; }
+.nudge-box { margin-top: .7rem; background: #fff8eb; border: 1px solid #fde3b0; border-radius: 10px; padding: .6rem .85rem; font-size: .9rem; line-height: 1.6; font-variant-numeric: tabular-nums; }
